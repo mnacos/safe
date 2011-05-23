@@ -24,7 +24,8 @@ module Astrails
         raise RuntimeError, "pipe-streaming not supported for S3." unless @backup.path
 
         # needed in cleanup even on dry run
-        cf = CloudFiles::Connection.new(user, api_key, true, service_net) unless $LOCAL
+        cf = CloudFiles::Connection.new(:username => user,:api_key => api_key,:auth_url => CloudFiles::AUTH_UK) unless $LOCAL
+        # cf = CloudFiles::Connection.new(user, api_key, true, service_net) unless $LOCAL
         puts "Uploading #{container}:#{full_path} from #{@backup.path}" if $_VERBOSE || $DRY_RUN
         unless $DRY_RUN || $LOCAL
           if get_file_size(@backup.path) > MAX_CLOUDFILES_FILE_SIZE
@@ -47,7 +48,8 @@ module Astrails
         return unless keep = @config[:keep, :cloudfiles]
 
         puts "listing files: #{container}:#{base}*" if $_VERBOSE
-        cf = CloudFiles::Connection.new(user, api_key, true, service_net) unless $LOCAL
+        cf = CloudFiles::Connection.new(:username => user,:api_key => api_key,:auth_url => CloudFiles::AUTH_UK) unless $LOCAL
+        # cf = CloudFiles::Connection.new(user, api_key, true, service_net) unless $LOCAL
         cf_container = cf.container(container)
         files = cf_container.objects(:prefix => base).sort
 
